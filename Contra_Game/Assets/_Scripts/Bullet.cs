@@ -16,10 +16,16 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // ���� ����� ������� ���� �����
-        Debug.Log("����� �: " + hitInfo.name);
+        // Проверяем: "А не попал ли я во врага?"
+        Enemy enemy = hitInfo.GetComponent<Enemy>();
 
-        // ���������� ���� ��� �����
+        // Если скрипт Enemy найден на том, во что мы попали...
+        if (enemy != null)
+        {
+            enemy.TakeDamage(1); // ...наносим 1 урон
+        }
+
+        // Уничтожаем пулю в любом случае (даже если попали в стену)
         Destroy(gameObject);
     }
 }
