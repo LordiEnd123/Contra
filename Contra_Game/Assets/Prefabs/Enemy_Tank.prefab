@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3056846680619048920, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4575025159099618956, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: health
       value: 5
@@ -26,7 +30,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6730921505444230514, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_Name
-      value: Enemy Variant
+      value: Enemy_Tank
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalScale.x
@@ -38,11 +42,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.1261997
+      value: 8.99415
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.5837697
+      value: 1.0578806
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.z
