@@ -16,16 +16,33 @@ public class Bullet : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // Проверяем: "А не попал ли я во врага?"
-        Enemy enemy = hitInfo.GetComponent<Enemy>();
-
-        // Если скрипт Enemy найден на том, во что мы попали...
-        if (enemy != null)
+        // 1. ИГНОР ИГРОКА: Если пуля задела того, кто её выпустил - летим дальше
+        if (hitInfo.CompareTag("Player"))
         {
-            enemy.TakeDamage(1); // ...наносим 1 урон
+            return;
         }
 
-        // Уничтожаем пулю в любом случае (даже если попали в стену)
+        // 2. ИГНОР ДРУГИХ ПУЛЬ: Если пуля задела другую пулю (у которой тоже есть скрипт Bullet)
+        if (hitInfo.GetComponent<Bullet>() != null)
+        {
+            return;
+        }
+
+        // 3. ИГНОР БОНУСОВ: Чтобы пуля не взрывалась об коробку с бонусом
+        if (hitInfo.GetComponent<PowerUp>() != null)
+        {
+            return;
+        }
+
+        // --- ДАЛЬШЕ СТАРАЯ ЛОГИКА ---
+
+        Enemy enemy = hitInfo.GetComponent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(1);
+        }
+
+        // Уничтожаем пулю, только если прошли все проверки выше (значит врезались в стену или врага)
         Destroy(gameObject);
     }
 }

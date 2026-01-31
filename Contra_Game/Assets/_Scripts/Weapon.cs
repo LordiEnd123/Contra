@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
-    public Transform firePoint; // Откуда вылетает
-    public GameObject bulletPrefab; // Что вылетает
+    public Transform firePoint;
+    public GameObject bulletPrefab;
+
+    // Новая настройка: включен ли дробовик?
+    public bool isSpreadGun = false;
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire1")) // Левая кнопка мыши или Ctrl
+        if (Input.GetButtonDown("Fire1"))
         {
             Shoot();
         }
@@ -15,15 +18,43 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
-        // 1. Создаем пулю и запоминаем её в переменную newBullet
-        GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        // Если включен режим Spread Gun (Дробовик)
+        if (isSpreadGun)
+        {
+            // Создаем 3 пули с разным поворотом (0, +15 градусов, -15 градусов)
+            CreateBullet(0);
+            CreateBullet(15);
+            CreateBullet(-15);
+        }
+        else
+        {
+            // Обычный режим - одна пуля прямо
+            CreateBullet(0);
+        }
+    }
 
-        // 2. Проверяем: если игрок (на котором висит этот скрипт) смотрит влево...
-        // (То есть его Scale по X меньше нуля)
+    // Вспомогательная функция, чтобы не писать одно и то же 3 раза
+    void CreateBullet(float angleOffset)
+    {
+        // Берем текущий поворот дула
+        Quaternion rotation = firePoint.rotation;
+
+        // Добавляем к нему угол (поворачиваем пулю)
+        // Euler(0, 0, angle) поворачивает по оси Z (как стрелку часов)
+        rotation *= Quaternion.Euler(0, 0, angleOffset);
+
+        GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, rotation);
+
+        // Твой фикс для поворота влево (оставляем как было)
         if (transform.localScale.x < 0)
         {
-            // ...то разворачиваем пулю на 180 градусов по оси Y
             newBullet.transform.Rotate(0f, 180f, 0f);
         }
+    }
+
+    // Метод, который вызовет коробка с бонусом, чтобы включить этот режим
+    public void ActivateSpreadGun()
+    {
+        isSpreadGun = true;
     }
 }
