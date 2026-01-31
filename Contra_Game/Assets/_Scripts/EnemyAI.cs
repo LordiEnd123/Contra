@@ -19,23 +19,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Когда враг сталкивается с чем-то физическим (телом игрока)
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // Проверяем, это Игрок?
+        // --- ШПИОНСКАЯ СТРОЧКА ---
+        Debug.Log("Враг врезался в: " + collision.gameObject.name);
+        // -------------------------
+
         if (collision.gameObject.tag == "Player")
         {
-            // Пытаемся найти у него скрипт здоровья
+            // ... твой старый код ...
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
-
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(1); // Наносим 1 урон
-            }
-
-            // В Contra враги часто не умирают от удара об игрока, но давай сделаем,
-            // чтобы враг отталкивал или уничтожался? 
-            // Для простоты пока ничего не делаем, враг просто толкает игрока.
+            if (playerHealth != null) playerHealth.TakeDamage(1);
         }
     }
 }
