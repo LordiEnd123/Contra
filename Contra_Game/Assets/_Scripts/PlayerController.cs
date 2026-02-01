@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,8 +9,12 @@ public class PlayerController : MonoBehaviour
 
     [Header("Components")]
     public Rigidbody2D rb;
+    public BoxCollider2D playerCollider; // Твой коллайдер
     public Transform groundCheck;
     public LayerMask groundLayer;
+
+    [Header("Platform Drop Settings")]
+    public LayerMask platformLayer; // ВЫБЕРИ ЗДЕСЬ СЛОЙ "Passable"
 
     [Header("Double Jump Settings")]
     public int extraJumpsValue = 2;
@@ -19,58 +24,91 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded;
     private bool isFacingRight = true;
 
-    // Ссылка на камеру для слежения за мышкой
+    // Переменные для приседания (размеры)
+    private Vector2 standSize;
+    private Vector2 standOffset;
+    private Vector2 crouchSize;
+    private Vector2 crouchOffset;
+    private bool isCrouching = false;
+
     private Camera mainCam;
 
     void Start()
     {
-        // Находим камеру при старте
         mainCam = Camera.main;
+
+        // Запоминаем размеры
+        standSize = playerCollider.size;
+        standOffset = playerCollider.offset;
+        crouchSize = new Vector2(standSize.x, standSize.y / 2f);
+        crouchOffset = new Vector2(standOffset.x, standOffset.y - (standSize.y / 4f));
     }
 
     void Update()
     {
-        // 1. ЧИТАЕМ ДВИЖЕНИЕ
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        // 2. ЛОГИКА ПРЫЖКОВ (Твой старый код)
-        if (isGrounded)
+        // --- 1. ПРЫЖОК ВНИЗ (ИСПРАВЛЕНО) ---
+        if (Input.GetKey(KeyCode.S) && Input.GetButtonDown("Jump"))
         {
-            extraJumps = extraJumpsValue;
+            // РИСУЕМ ЛАЗЕР, чтобы ты видел его в Scene (Красная линия)
+            Debug.DrawRay(groundCheck.position, Vector2.down * 3f, Color.red, 2f);
+
+            // Увеличили длину до 3f, чтобы точно достать!
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 3f, platformLayer);
+
+            if (hit.collider != null)
+            {
+                Debug.Log("ВИЖУ ПЛАТФОРМУ: " + hit.collider.name); // Проверка в консоль
+                StartCoroutine(FallThrough(hit.collider));
+            }
+            else
+            {
+                Debug.Log("НЕ ВИЖУ ПЛАТФОРМУ! Луч промахнулся.");
+            }
         }
 
-        if (Input.GetButtonDown("Jump") && extraJumps > 0)
+        // --- 2. ПРИСЕДАНИЕ ---
+        if (Input.GetKey(KeyCode.S) && isGrounded)
+        {
+            playerCollider.size = crouchSize;
+            playerCollider.offset = crouchOffset;
+            isCrouching = true;
+        }
+        else
+        {
+            if (isCrouching)
+            {
+                playerCollider.size = standSize;
+                playerCollider.offset = standOffset;
+                isCrouching = false;
+            }
+        }
+
+        // --- 3. ПРЫЖОК ВВЕРХ ---
+        if (isGrounded) extraJumps = extraJumpsValue;
+
+        if (Input.GetButtonDown("Jump") && !Input.GetKey(KeyCode.S) && extraJumps > 0)
         {
             rb.linearVelocity = Vector2.up * jumpForce;
             extraJumps--;
         }
-        else if (Input.GetButtonDown("Jump") && extraJumps == 0 && isGrounded)
+        else if (Input.GetButtonDown("Jump") && !Input.GetKey(KeyCode.S) && extraJumps == 0 && isGrounded)
         {
             rb.linearVelocity = Vector2.up * jumpForce;
         }
 
-        // 3. ПОВОРОТ ПЕРСОНАЖА ЗА МЫШКОЙ (НОВОЕ!) 🖱️
+        // --- 4. ПОВОРОТ ---
         if (mainCam != null)
         {
-            // Переводим положение мыши из экрана в игровые координаты
             Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-
-            // Если мышка справа от нас (> x), а мы смотрим влево -> Повернись
-            if (mousePos.x > transform.position.x && !isFacingRight)
-            {
-                Flip();
-            }
-            // Если мышка слева от нас (< x), а мы смотрим вправо -> Повернись
-            else if (mousePos.x < transform.position.x && isFacingRight)
-            {
-                Flip();
-            }
+            if (mousePos.x > transform.position.x && !isFacingRight) Flip();
+            else if (mousePos.x < transform.position.x && isFacingRight) Flip();
         }
     }
 
     void FixedUpdate()
     {
-        // Двигаем физикой
         rb.linearVelocity = new Vector2(horizontalInput * moveSpeed, rb.linearVelocity.y);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
@@ -81,5 +119,18 @@ public class PlayerController : MonoBehaviour
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+
+    // --- ГЛАВНАЯ МАГИЯ ---
+    IEnumerator FallThrough(Collider2D platformCollider)
+    {
+        // Игнорируем столкновение ТОЛЬКО между Игроком и ЭТОЙ платформой
+        Physics2D.IgnoreCollision(playerCollider, platformCollider, true);
+
+        // Ждем 0.5 секунды
+        yield return new WaitForSeconds(0.5f);
+
+        // Включаем обратно
+        Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
     }
 }
