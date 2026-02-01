@@ -54,7 +54,9 @@ public class PlayerHealth : MonoBehaviour
 
     void GameOver()
     {
-        // Перезагрузка уровня полностью
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        // Было: SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+        // Стало: Загружаем сцену смерти
+        SceneManager.LoadScene("GameOver"); // Убедись, что сцена называется именно так
     }
 }

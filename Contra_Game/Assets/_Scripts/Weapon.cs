@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Weapon : MonoBehaviour
 {
@@ -6,18 +6,45 @@ public class Weapon : MonoBehaviour
     public GameObject bulletPrefab;
     public bool isSpreadGun = false;
 
-    // --- �����: ���������� ��� ����� ---
-    public AudioClip shootSound; // ���� ��������� ���� �����
-    private AudioSource audioSource; // ��� ���������-"�������", ������� ������ ����
+    // --- НОВОЕ: Переменные для звука ---
+    public AudioClip shootSound; // Сюда перетащим файл звука
+    private AudioSource audioSource; // Это компонент-"колонка", который играет звук
+
+    // Ссылка на камеру, чтобы найти мышку
+    private Camera mainCam;
 
     void Start()
     {
-        // --- �����: ������� "�������" �� ������ ��� ������
-        audioSource = GetComponent<AudioSource>();
+        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
     }
 
     void Update()
     {
+        // 1. ПОВОРОТ ЗА МЫШКОЙ 🖱️
+        // Переводим позицию мыши из пикселей экрана в координаты игрового мира
+        Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+
+        // Вычисляем направление от пушки к мыши
+        Vector3 direction = mousePos - transform.position;
+
+        // Вычисляем угол поворота в градусах (магия тригонометрии)
+        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        // Применяем поворот
+        transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
+
+        if (rotZ > 90 || rotZ < -90)
+        {
+            // Переворачиваем пушку вверх ногами по Y, чтобы она выглядела нормально
+            transform.localScale = new Vector3(1, -1, 1);
+        }
+        else
+        {
+            // Возвращаем как было
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+
+        // 2. СТРЕЛЬБА
         if (Input.GetButtonDown("Fire1"))
         {
             Shoot();
@@ -26,13 +53,13 @@ public class Weapon : MonoBehaviour
 
     void Shoot()
     {
-        // --- �����: ���� ���� ���� � ������� ���� � ������!
+        // --- НОВОЕ: Если звук есть и колонка есть — ИГРАЕМ!
         if (shootSound != null && audioSource != null)
         {
-            audioSource.PlayOneShot(shootSound); // PlayOneShot ��������� ����������� ����� ���� �� �����
+            audioSource.PlayOneShot(shootSound); // PlayOneShot позволяет накладывать звуки друг на друга
         }
 
-        // ������ ������ ��������...
+        // Старая логика стрельбы...
         if (isSpreadGun)
         {
             CreateBullet(0);

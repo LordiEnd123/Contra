@@ -7,8 +7,8 @@ public class PowerUp : MonoBehaviour
         // Проверяем, что в нас вошел именно Игрок
         if (collision.tag == "Player")
         {
-            // Ищем у игрока скрипт Weapon
-            Weapon playerWeapon = collision.GetComponent<Weapon>();
+            // Ищем компонент Weapon на самом объекте ИЛИ на любых его дочерних объектах
+            Weapon playerWeapon = collision.GetComponentInChildren<Weapon>();
 
             if (playerWeapon != null)
             {
