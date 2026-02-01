@@ -1,17 +1,15 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // НОВОЕ: Нужно для работы с картинками UI
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int health = 3;
+    public int health = 3; // Это наши ЖИЗНИ
+    public Image[] hearts; // Сердечки UI
 
-    // НОВОЕ: Массив, куда мы положим наши картинки сердечек
-    [Header("UI Settings")]
-    public Image[] hearts;
+    // НОВОЕ: Сюда мы перетащим наш RespawnPoint
+    public Transform currentCheckpoint;
 
-    // НОВОЕ: При старте проверяем, чтобы количество сердечек на экране
-    // совпадало с количеством жизней в настройках.
     void Start()
     {
         UpdateHeartsUI();
@@ -20,37 +18,43 @@ public class PlayerHealth : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
-
-        // НОВОЕ: Сразу после получения урона обновляем UI
         UpdateHeartsUI();
 
-        if (health <= 0)
+        if (health > 0)
         {
-            Die();
+            // ЖИЗНИ ЕСТЬ: Возрождаемся
+            Respawn();
+        }
+        else
+        {
+            // ЖИЗНЕЙ НЕТ: Game Over
+            GameOver();
         }
     }
 
-    // НОВОЕ: Метод, который рисует сердечки
+    void Respawn()
+    {
+        // 1. Переносим игрока на точку возрождения
+        transform.position = currentCheckpoint.position;
+
+        // 2. (Опционально) Сбрасываем скорость, чтобы он не вылетел по инерции
+        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+
+        Debug.Log("Игрок потерял жизнь и возродился!");
+    }
+
     void UpdateHeartsUI()
     {
-        // Пробегаемся по всем картинкам сердечек в массиве
         for (int i = 0; i < hearts.Length; i++)
         {
-            // Если номер сердечка меньше текущего здоровья - включаем его.
-            // Если больше - выключаем.
-            if (i < health)
-            {
-                hearts[i].enabled = true; // Показываем
-            }
-            else
-            {
-                hearts[i].enabled = false; // Скрываем
-            }
+            if (i < health) hearts[i].enabled = true;
+            else hearts[i].enabled = false;
         }
     }
 
-    void Die()
+    void GameOver()
     {
+        // Перезагрузка уровня полностью
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
