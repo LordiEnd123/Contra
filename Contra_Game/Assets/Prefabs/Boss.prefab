@@ -154,7 +154,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   maxHealth: 1000
-  activationDistance: 15
+  activationDistance: 10
   nextLevelName: Level2
   healthBar: {fileID: 0}
   winText: {fileID: 0}

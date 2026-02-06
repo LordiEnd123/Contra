@@ -2251,10 +2251,6 @@ PrefabInstance:
       propertyPath: healthBar
       value: 
       objectReference: {fileID: 601323704}
-    - target: {fileID: 7698757636797481762, guid: 79c30008cd807d34091da61faa12c14c, type: 3}
-      propertyPath: activationDistance
-      value: 15
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
