@@ -3,89 +3,148 @@
 public class Weapon : MonoBehaviour
 {
     public Transform firePoint;
-    public GameObject bulletPrefab;
-    public bool isSpreadGun = false;
 
-    // --- НОВОЕ: Переменные для звука ---
-    public AudioClip shootSound; // Сюда перетащим файл звука
-    private AudioSource audioSource; // Это компонент-"колонка", который играет звук
+    [Header("Настройки Времени")]
+    public float bonusDuration = 10f; // Сколько секунд работает бонус (строй в Инспекторе)
+    private float currentBonusTimer;  // Таймер обратного отсчета
 
-    // Ссылка на камеру, чтобы найти мышку
-    private Camera mainCam;
+    [Header("Префабы пуль")]
+    public GameObject bulletPrefab; // Обычная
+    public GameObject laserPrefab;  // Лазер (L)
+    public GameObject firePrefab;   // Фаербол (F)
 
-    void Start()
-    {
-        mainCam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
-    }
+    // Режимы стрельбы
+    private bool isSpreadGun = false;
+    private bool isMachineGun = false;
+    private bool isLaserGun = false;
+    private bool isFireGun = false;
+
+    private float timeBetweenShots;
+    public float startTimeBetweenShots; // Задержка для обычного оружия
 
     void Update()
     {
-        // 1. ПОВОРОТ ЗА МЫШКОЙ 🖱️
-        // Переводим позицию мыши из пикселей экрана в координаты игрового мира
-        Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
-
-        // Вычисляем направление от пушки к мыши
-        Vector3 direction = mousePos - transform.position;
-
-        // Вычисляем угол поворота в градусах (магия тригонометрии)
-        float rotZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        // Применяем поворот
-        transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
-
-        if (rotZ > 90 || rotZ < -90)
+        // --- ЛОГИКА ТАЙМЕРА БОНУСА ---
+        if (currentBonusTimer > 0)
         {
-            // Переворачиваем пушку вверх ногами по Y, чтобы она выглядела нормально
-            transform.localScale = new Vector3(1, -1, 1);
+            currentBonusTimer -= Time.deltaTime; // Отнимаем время
+
+            if (currentBonusTimer <= 0)
+            {
+                ResetWeapons(); // Время вышло! Сбрасываем оружие
+                Debug.Log("Время бонуса истекло! Возврат к обычной пушке.");
+            }
+        }
+        // -----------------------------
+
+        // Таймер стрельбы
+        if (timeBetweenShots <= 0)
+        {
+            // ПУЛЕМЕТ (Авто-огонь: держим кнопку)
+            if (isMachineGun && Input.GetButton("Fire1"))
+            {
+                Shoot(bulletPrefab, 0); // Пулемет стреляет обычными пулями
+                timeBetweenShots = 0.1f;
+            }
+            // ВСЕ ОСТАЛЬНЫЕ (Одиночный клик)
+            else if (Input.GetButtonDown("Fire1"))
+            {
+                ShootLogic(); // Выбираем, чем стрелять
+                timeBetweenShots = startTimeBetweenShots;
+            }
         }
         else
         {
-            // Возвращаем как было
-            transform.localScale = new Vector3(1, 1, 1);
-        }
-
-        // 2. СТРЕЛЬБА
-        if (Input.GetButtonDown("Fire1"))
-        {
-            Shoot();
+            timeBetweenShots -= Time.deltaTime;
         }
     }
 
-    void Shoot()
+    // Логика выбора пули
+    void ShootLogic()
     {
-        // --- НОВОЕ: Если звук есть и колонка есть — ИГРАЕМ!
-        if (shootSound != null && audioSource != null)
-        {
-            audioSource.PlayOneShot(shootSound); // PlayOneShot позволяет накладывать звуки друг на друга
-        }
-
-        // Старая логика стрельбы...
         if (isSpreadGun)
         {
-            CreateBullet(0);
-            CreateBullet(15);
-            CreateBullet(-15);
+            // Дробовик (3 пули веером)
+            SpawnBullet(bulletPrefab, 0);
+            SpawnBullet(bulletPrefab, 15);
+            SpawnBullet(bulletPrefab, -15);
+        }
+        else if (isLaserGun)
+        {
+            SpawnBullet(laserPrefab, 0);
+        }
+        else if (isFireGun)
+        {
+            SpawnBullet(firePrefab, 0);
         }
         else
         {
-            CreateBullet(0);
+            // Обычная стрельба (если нет бонусов)
+            SpawnBullet(bulletPrefab, 0);
         }
     }
 
-    void CreateBullet(float angleOffset)
+    // Вспомогательный метод для создания пули
+    void SpawnBullet(GameObject prefab, float angleOffset)
     {
-        Quaternion rotation = firePoint.rotation;
-        rotation *= Quaternion.Euler(0, 0, angleOffset);
-        GameObject newBullet = Instantiate(bulletPrefab, firePoint.position, rotation);
+        // Если стрелять нечем (забыл положить префаб), выходим, чтобы не было ошибок
+        if (prefab == null) return;
 
+        GameObject newBullet = Instantiate(prefab, firePoint.position, firePoint.rotation);
+
+        // Поворот (для дробовика)
+        if (angleOffset != 0) newBullet.transform.Rotate(0, 0, angleOffset);
+
+        // РАЗВОРОТ ПУЛИ (если игрок смотрит влево через Scale)
         if (transform.localScale.x < 0)
         {
-            newBullet.transform.Rotate(0f, 180f, 0f);
+            newBullet.transform.Rotate(0, 180, 0);
         }
     }
+
+    // Специальный метод для Пулемета (чтобы стрелять из Update)
+    void Shoot(GameObject prefab, float angleOffset)
+    {
+        SpawnBullet(prefab, angleOffset);
+    }
+
+    // --- Методы включения (их вызывает PowerUp) ---
 
     public void ActivateSpreadGun()
     {
+        ResetWeapons();
         isSpreadGun = true;
+        currentBonusTimer = bonusDuration; // ЗАПУСКАЕМ ТАЙМЕР
+    }
+
+    public void ActivateMachineGun()
+    {
+        ResetWeapons();
+        isMachineGun = true;
+        currentBonusTimer = bonusDuration; // ЗАПУСКАЕМ ТАЙМЕР
+    }
+
+    public void ActivateLaserGun()
+    {
+        ResetWeapons();
+        isLaserGun = true;
+        currentBonusTimer = bonusDuration; // ЗАПУСКАЕМ ТАЙМЕР
+    }
+
+    public void ActivateFireGun()
+    {
+        ResetWeapons();
+        isFireGun = true;
+        currentBonusTimer = bonusDuration; // ЗАПУСКАЕМ ТАЙМЕР
+    }
+
+    // Сброс всего в "Обычный режим"
+    void ResetWeapons()
+    {
+        isSpreadGun = false;
+        isMachineGun = false;
+        isLaserGun = false;
+        isFireGun = false;
+        currentBonusTimer = 0; // Обнуляем таймер
     }
 }

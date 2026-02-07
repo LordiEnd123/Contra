@@ -2,24 +2,20 @@ using UnityEngine;
 
 public class TurretAI : MonoBehaviour
 {
-    public Transform gun;         // Ссылка на дуло (которое будет крутиться)
-    public Transform firePoint;   // Откуда вылетает
-    public GameObject bulletPrefab; // Злая пуля
+    public float range = 10f;       // Радиус зрения
+    public float fireRate = 1f;     // Пауза между выстрелами
+    public GameObject bulletPrefab; // Префаб пули
+    public Transform firePoint;     // Откуда вылетает
+    public Transform gunPart;       // Крутящаяся часть (Gun)
 
-    public float range = 10f;     // Дальность стрельбы
-    public float fireRate = 2f;   // Пауза между выстрелами
-
-    private float nextFireTime = 0f;
-    private Transform player;     // За кем следим
+    private Transform player;
+    private float nextFireTime;
 
     void Start()
     {
-        // Находим игрока по тегу автоматически
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-        {
-            player = playerObj.transform;
-        }
+        // Ищем игрока по тегу (убедись, что у игрока тег "Player")
+        GameObject p = GameObject.FindGameObjectWithTag("Player");
+        if (p != null) player = p.transform;
     }
 
     void Update()
@@ -27,30 +23,36 @@ public class TurretAI : MonoBehaviour
         if (player == null) return;
 
         // 1. Проверяем дистанцию
-        float distanceToPlayer = Vector2.Distance(transform.position, player.position);
+        float dist = Vector2.Distance(transform.position, player.position);
 
-        if (distanceToPlayer < range)
+        if (dist < range)
         {
-            // 2. Целимся (Математика поворота)
-            Vector2 direction = player.position - gun.position;
+            // 2. Поворачиваем пушку на игрока
+            Vector2 direction = player.position - gunPart.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            gun.rotation = Quaternion.Euler(0, 0, angle);
 
-            // 3. Стреляем по таймеру
+            // Если спрайт пушки изначально смотрит вправо - оставляем так.
+            // Если влево - возможно придется добавить +180 к углу.
+            gunPart.rotation = Quaternion.Euler(0, 0, angle);
+
+            // 3. Стреляем
             if (Time.time > nextFireTime)
             {
                 Shoot();
-                nextFireTime = Time.time + fireRate;
+                nextFireTime = Time.time + 1f / fireRate;
             }
         }
     }
 
     void Shoot()
     {
-        Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        if (bulletPrefab != null && firePoint != null)
+        {
+            Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        }
     }
 
-    // Рисуем круг радиуса в редакторе, чтобы видеть зону обстрела
+    // Рисуем радиус в редакторе, чтобы было удобно настраивать
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

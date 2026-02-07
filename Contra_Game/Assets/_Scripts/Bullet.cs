@@ -3,47 +3,63 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public float speed = 20f;
-    public int damage = 10; // Урон пули (у Босса 100 жизней, значит нужно 10 попаданий)
+    public int damage = 10;
     public Rigidbody2D rb;
+
+    // --- ВОТ ЭТОЙ СТРОЧКИ У ТЕБЯ НЕ ХВАТАЛО ---
+    public bool isLaser = false;
+    // ------------------------------------------
 
     void Start()
     {
-        // Полет пули
+        // Задаем скорость полета
         rb.linearVelocity = transform.right * speed;
 
-        // Уничтожить через 3 секунды, чтобы не засорять память
+        // Удаляем пулю через 3 секунды, чтобы не улетела бесконечно далеко
         Destroy(gameObject, 3f);
     }
 
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // 1. ИГНОР ИГРОКА
+        // 1. Игнорируем самого игрока, другие пули и бонусы
         if (hitInfo.CompareTag("Player")) return;
-
-        // 2. ИГНОР ДРУГИХ ПУЛЬ
         if (hitInfo.GetComponent<Bullet>() != null) return;
-
-        // 3. ИГНОР БОНУСОВ
         if (hitInfo.GetComponent<PowerUp>() != null) return;
 
-
-        // --- ЛОГИКА ПОПАДАНИЙ ---
-
-        // А. Попали в обычного Врага
+        // 2. Логика попадания во ВРАГА
         Enemy enemy = hitInfo.GetComponent<Enemy>();
         if (enemy != null)
         {
-            enemy.TakeDamage(damage); // Используем переменную damage
+            enemy.TakeDamage(damage);
+
+            // ЕСЛИ ЭТО ОБЫЧНАЯ ПУЛЯ (не лазер) - она исчезает
+            if (isLaser == false)
+            {
+                Destroy(gameObject);
+            }
+            // А если лазер (isLaser == true) - код просто идет дальше, пуля не удаляется!
+            return;
         }
 
-        // Б. Попали в БОССА (НОВОЕ!)
+        // 3. Логика для БОССА (если скрипт Boss существует)
+        // Если будет гореть красным - просто удали этот блок пока
         BossController boss = hitInfo.GetComponent<BossController>();
         if (boss != null)
         {
-            boss.TakeDamage(damage); // Наносим урон боссу
+            boss.TakeDamage(damage);
+            if (isLaser == false) Destroy(gameObject);
+            return;
         }
 
-        // Уничтожаем пулю при попадании во что угодно (враг, босс, стена, земля)
-        Destroy(gameObject);
+        // 4. Попали в СТЕНУ или ЗЕМЛЮ
+        if (hitInfo.CompareTag("Ground"))
+        {
+            Destroy(gameObject);
+        }
+        // Попали во что-то непонятное (ящик, платформа)
+        else if (isLaser == false)
+        {
+            Destroy(gameObject);
+        }
     }
 }

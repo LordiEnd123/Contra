@@ -2,23 +2,28 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
+    // Добавили FireGun
+    public enum WeaponType { SpreadGun, MachineGun, LaserGun, FireGun }
+
+    public WeaponType weaponType;
+
     void OnTriggerEnter2D(Collider2D collision)
     {
-        // Проверяем, что в нас вошел именно Игрок
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player"))
         {
-            // Ищем компонент Weapon на самом объекте ИЛИ на любых его дочерних объектах
             Weapon playerWeapon = collision.GetComponentInChildren<Weapon>();
 
             if (playerWeapon != null)
             {
-                // Включаем режим дробовика
-                playerWeapon.ActivateSpreadGun();
+                if (weaponType == WeaponType.SpreadGun) playerWeapon.ActivateSpreadGun();
+                else if (weaponType == WeaponType.MachineGun) playerWeapon.ActivateMachineGun();
+                else if (weaponType == WeaponType.LaserGun) playerWeapon.ActivateLaserGun();
+                else if (weaponType == WeaponType.FireGun) // <--- НОВОЕ
+                {
+                    playerWeapon.ActivateFireGun();
+                    Debug.Log("Подобран F (Fireball)!");
+                }
 
-                // Эффект подбора (вывод в консоль)
-                Debug.Log("S-GUN ACTIVATED!");
-
-                // Удаляем саму коробку со сцены
                 Destroy(gameObject);
             }
         }

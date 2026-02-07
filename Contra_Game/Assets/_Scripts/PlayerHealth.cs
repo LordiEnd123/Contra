@@ -4,11 +4,9 @@ using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int health = 3; // Это наши ЖИЗНИ
+    public int health = 3; // Жизни
     public Image[] hearts; // Сердечки UI
-
-    // НОВОЕ: Сюда мы перетащим наш RespawnPoint
-    public Transform currentCheckpoint;
+    public Transform currentCheckpoint; // Точка возрождения
 
     void Start()
     {
@@ -34,13 +32,31 @@ public class PlayerHealth : MonoBehaviour
 
     void Respawn()
     {
-        // 1. Переносим игрока на точку возрождения
-        transform.position = currentCheckpoint.position;
+        // 1. Переносим игрока на точку возрождения (если она есть)
+        if (currentCheckpoint != null)
+        {
+            transform.position = currentCheckpoint.position;
+        }
+        else
+        {
+            // Если чекпоинт еще не взят, кидаем в начало координат (на всякий случай)
+            transform.position = Vector3.zero;
+        }
 
-        // 2. (Опционально) Сбрасываем скорость, чтобы он не вылетел по инерции
-        GetComponent<Rigidbody2D>().linearVelocity = Vector2.zero;
+        // 2. Сбрасываем инерцию (чтобы не летел после телепорта)
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        Debug.Log("Игрок потерял жизнь и возродился!");
+        // 3. --- ВОТ ЭТО ГЛАВНОЕ: СБРОС КАМЕРЫ ---
+        // Находим главную камеру и вызываем наш новый метод ResetCamera()
+        CameraFollow cam = Camera.main.GetComponent<CameraFollow>();
+        if (cam != null)
+        {
+            cam.ResetCamera();
+        }
+        // ----------------------------------------
+
+        Debug.Log("Игрок возродился, камера сброшена!");
     }
 
     void UpdateHeartsUI()
@@ -54,9 +70,6 @@ public class PlayerHealth : MonoBehaviour
 
     void GameOver()
     {
-        // Было: SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-
-        // Стало: Загружаем сцену смерти
-        SceneManager.LoadScene("GameOver"); // Убедись, что сцена называется именно так
+        SceneManager.LoadScene("GameOver"); // Убедись, что сцена добавлена в Build Settings
     }
 }
