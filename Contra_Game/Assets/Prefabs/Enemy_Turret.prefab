@@ -182,6 +182,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   health: 5
+  moveSpeed: 0
+  destroyOverTime: 0
+  lifeTime: 10
+  activationDistance: 0
 --- !u!114 &7495777981421045974
 MonoBehaviour:
   m_ObjectHideFlags: 0

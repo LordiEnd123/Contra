@@ -1,62 +1,101 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections; // НУЖНО ДЛЯ КОРУТИН (IEnumerator)
 
 public class PlayerHealth : MonoBehaviour
 {
-    public int health = 3; // Жизни
-    public Image[] hearts; // Сердечки UI
-    public Transform currentCheckpoint; // Точка возрождения
+    [Header("Здоровье")]
+    public int health = 3;
+    public Image[] hearts;
+    public Transform currentCheckpoint;
+
+    [Header("Неуязвимость")]
+    public float invulnerabilityDuration = 2f; // Сколько секунд длится бессмертие
+    public float flashSpeed = 0.1f; // Как быстро мигать (чем меньше число, тем чаще)
+
+    private bool isInvulnerable = false; // Сейчас бессмертен?
+    private SpriteRenderer spriteRenderer; // Чтобы мигать картинкой
+    private Collider2D myCollider;
 
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        myCollider = GetComponent<Collider2D>();
         UpdateHeartsUI();
     }
 
     public void TakeDamage(int damage)
     {
+        // 1. ЕСЛИ БЕССМЕРТЕН — ВЫХОДИМ, УРОН НЕ ПРОХОДИТ
+        if (isInvulnerable) return;
+
         health -= damage;
         UpdateHeartsUI();
 
         if (health > 0)
         {
-            // ЖИЗНИ ЕСТЬ: Возрождаемся
             Respawn();
         }
         else
         {
-            // ЖИЗНЕЙ НЕТ: Game Over
             GameOver();
         }
     }
 
     void Respawn()
     {
-        // 1. Переносим игрока на точку возрождения (если она есть)
+        // 1. Телепортация
         if (currentCheckpoint != null)
         {
             transform.position = currentCheckpoint.position;
         }
         else
         {
-            // Если чекпоинт еще не взят, кидаем в начало координат (на всякий случай)
             transform.position = Vector3.zero;
         }
 
-        // 2. Сбрасываем инерцию (чтобы не летел после телепорта)
+        // 2. Сброс физики
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        // 3. --- ВОТ ЭТО ГЛАВНОЕ: СБРОС КАМЕРЫ ---
-        // Находим главную камеру и вызываем наш новый метод ResetCamera()
+        // 3. Сброс камеры
         CameraFollow cam = Camera.main.GetComponent<CameraFollow>();
-        if (cam != null)
-        {
-            cam.ResetCamera();
-        }
-        // ----------------------------------------
+        if (cam != null) cam.ResetCamera();
 
-        Debug.Log("Игрок возродился, камера сброшена!");
+        // 4. ЗАПУСКАЕМ НЕУЯЗВИМОСТЬ
+        StartCoroutine(BecomeInvulnerable());
+
+        Debug.Log("Возрождение с щитом!");
+    }
+
+    // --- МАГИЯ МИГАНИЯ ---
+    IEnumerator BecomeInvulnerable()
+    {
+        isInvulnerable = true;
+
+        // (Опционально) Можно сделать так, чтобы враги проходили сквозь нас:
+        // Physics2D.IgnoreLayerCollision(6, 7, true); 
+
+        // Цикл мигания
+        for (float i = 0; i < invulnerabilityDuration; i += flashSpeed)
+        {
+            // Выключаем картинку
+            if (spriteRenderer != null) spriteRenderer.enabled = false;
+
+            yield return new WaitForSeconds(flashSpeed / 2); // Ждем чуть-чуть
+
+            // Включаем картинку
+            if (spriteRenderer != null) spriteRenderer.enabled = true;
+
+            yield return new WaitForSeconds(flashSpeed / 2); // Ждем чуть-чуть
+        }
+
+        // В конце обязательно включаем всё обратно
+        if (spriteRenderer != null) spriteRenderer.enabled = true;
+        isInvulnerable = false;
+
+        // Physics2D.IgnoreLayerCollision(6, 7, false); // Если отключали коллизии
     }
 
     void UpdateHeartsUI()
@@ -70,6 +109,6 @@ public class PlayerHealth : MonoBehaviour
 
     void GameOver()
     {
-        SceneManager.LoadScene("GameOver"); // Убедись, что сцена добавлена в Build Settings
+        SceneManager.LoadScene("GameOver");
     }
 }

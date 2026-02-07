@@ -20,6 +20,10 @@ PrefabInstance:
       propertyPath: health
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 4575025159099618956, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
+      propertyPath: destroyOverTime
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6583512689363913236, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_FlipX
       value: 1
