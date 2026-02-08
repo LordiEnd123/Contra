@@ -71,6 +71,10 @@ PrefabInstance:
       propertyPath: health
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 4575025159099618956, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
+      propertyPath: activationDistance
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 6583512689363913236, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_FlipX
       value: 1
@@ -109,11 +113,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.13
+      value: 29.461441
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.91
+      value: -13.144286
       objectReference: {fileID: 0}
     - target: {fileID: 7279819065939130318, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       propertyPath: m_LocalPosition.z
@@ -156,9 +160,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 6730921505444230514, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1158803448292064550}
-    - targetCorrespondingSourceObject: {fileID: 6730921505444230514, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 7925110140638822632}
     - targetCorrespondingSourceObject: {fileID: 6730921505444230514, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
       insertIndex: -1
@@ -169,19 +170,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 6730921505444230514, guid: a31bd1d3dac075048a276678ff1ac2cd, type: 3}
   m_PrefabInstance: {fileID: 894471926797584669}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1158803448292064550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5836880655935224943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 598621fd7267f9d488962c436138024a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
-  speed: 1
 --- !u!114 &7925110140638822632
 MonoBehaviour:
   m_ObjectHideFlags: 0

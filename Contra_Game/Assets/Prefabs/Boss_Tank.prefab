@@ -421,7 +421,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BossController
   maxHealth: 200
-  activationDistance: 15
+  activationDistance: 10
   nextLevelName: MainMenu
   healthBar: {fileID: 0}
   winText: {fileID: 0}
@@ -440,10 +440,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TankBossEntry
   activatePoint: {fileID: 0}
   stopPoint: {fileID: 0}
-  driveSpeed: 4.5
+  driveSpeed: 5
   stopEpsilon: 0.05
-  bossController: {fileID: 0}
-  enemyShooting: {fileID: 0}
+  bossController: {fileID: 2342870997919350639}
+  enemyShooting: {fileID: 3250832120168597844}
 --- !u!1 &801796937795223389
 GameObject:
   m_ObjectHideFlags: 0

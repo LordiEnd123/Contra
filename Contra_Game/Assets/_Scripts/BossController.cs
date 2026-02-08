@@ -76,9 +76,13 @@ public class BossController : MonoBehaviour
         isBossActive = true;
         damageEnabled = !startInvulnerable;
 
-        // По умолчанию BossController может показать HP-bar сам,
-        // но TankBossEntry будет управлять видимостью вручную.
-        if (healthBar != null) healthBar.value = currentHealth;
+        // --- ДОБАВЬ ЭТУ СТРОКУ: ---
+        if (healthBar != null)
+        {
+            healthBar.gameObject.SetActive(true); // <--- ВОТ ЭТО ВКЛЮЧАЕТ ПОЛОСКУ
+            healthBar.value = currentHealth;
+        }
+        // --------------------------
 
         Debug.Log("Boss activated");
     }
