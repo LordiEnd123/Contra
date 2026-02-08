@@ -169,7 +169,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b2dd327b1040404d848110a7be1cd96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
-  speed: 12
+  speed: 5
   damage: 8
-  rb: {fileID: 8726009089723153099}
   isLaser: 0
+  worldLayers:
+    serializedVersion: 2
+    m_Bits: 0
