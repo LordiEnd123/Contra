@@ -350,11 +350,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Weapon
   firePoint: {fileID: 7663531445325229264}
-  bonusDuration: 5
+  bonusDuration: 10
   bulletPrefab: {fileID: 1580594507362055046, guid: faa12523c8d2b52449cd84d6902c8a00, type: 3}
   laserPrefab: {fileID: 1580594507362055046, guid: cb7231b795ffc174e93c04fbe842ca42, type: 3}
   firePrefab: {fileID: 1580594507362055046, guid: b63e179c94617914396f9ac97f343cf4, type: 3}
-  startTimeBetweenShots: 1
+  startTimeBetweenShots: 0.3
 --- !u!1 &8326604432558050804
 GameObject:
   m_ObjectHideFlags: 0
