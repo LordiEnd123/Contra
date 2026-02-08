@@ -1,63 +1,65 @@
+// Assets/_Scripts/Bullet.cs
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+[RequireComponent(typeof(Rigidbody2D))]
+public sealed class Bullet : MonoBehaviour
 {
-    public float speed = 20f;
-    public int damage = 10;
-    public Rigidbody2D rb;
+    [Header("Stats")]
+    [SerializeField] private float speed = 20f;
+    [SerializeField] private int damage = 10;
 
-    // --- ВОТ ЭТОЙ СТРОЧКИ У ТЕБЯ НЕ ХВАТАЛО ---
-    public bool isLaser = false;
-    // ------------------------------------------
+    [Header("Behaviour")]
+    [SerializeField] private bool isLaser = false;
 
-    void Start()
+    [Tooltip("Layers treated as world geometry (ground/walls/camerawalls/etc).")]
+    [SerializeField] private LayerMask worldLayers;
+
+    private Rigidbody2D rb;
+
+    private void Awake()
     {
-        // Задаем скорость полета
-        rb.linearVelocity = transform.right * speed;
+        rb = GetComponent<Rigidbody2D>();
+    }
 
-        // Удаляем пулю через 3 секунды, чтобы не улетела бесконечно далеко
+    private void Start()
+    {
+        rb.linearVelocity = transform.right * speed;
         Destroy(gameObject, 3f);
     }
 
-    void OnTriggerEnter2D(Collider2D hitInfo)
+    private void OnTriggerEnter2D(Collider2D hit)
     {
-        // 1. Игнорируем самого игрока, другие пули и бонусы
-        if (hitInfo.CompareTag("Player")) return;
-        if (hitInfo.GetComponent<Bullet>() != null) return;
-        if (hitInfo.GetComponent<PowerUp>() != null) return;
+        // Ignore player, other bullets, pickups
+        if (hit.CompareTag("Player")) return;
+        if (hit.GetComponent<Bullet>() != null) return;
+        if (hit.GetComponent<PowerUp>() != null) return;
 
-        // 2. Логика попадания во ВРАГА
-        Enemy enemy = hitInfo.GetComponent<Enemy>();
-        if (enemy != null)
-        {
-            enemy.TakeDamage(damage);
-
-            // ЕСЛИ ЭТО ОБЫЧНАЯ ПУЛЯ (не лазер) - она исчезает
-            if (isLaser == false)
-            {
-                Destroy(gameObject);
-            }
-            // А если лазер (isLaser == true) - код просто идет дальше, пуля не удаляется!
-            return;
-        }
-
-        // 3. Логика для БОССА (если скрипт Boss существует)
-        // Если будет гореть красным - просто удали этот блок пока
-        BossController boss = hitInfo.GetComponent<BossController>();
+        // 1) Boss first
+        BossController boss = hit.GetComponentInParent<BossController>();
         if (boss != null)
         {
             boss.TakeDamage(damage);
-            if (isLaser == false) Destroy(gameObject);
+            if (!isLaser) Destroy(gameObject);
             return;
         }
 
-        // 4. Попали в СТЕНУ или ЗЕМЛЮ
-        if (hitInfo.CompareTag("Ground"))
+        // 2) Regular enemy
+        Enemy enemy = hit.GetComponentInParent<Enemy>();
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+            if (!isLaser) Destroy(gameObject);
+            return;
+        }
+
+        // 3) World geometry by layers
+        if ((worldLayers.value & (1 << hit.gameObject.layer)) != 0)
         {
             Destroy(gameObject);
+            return;
         }
-        // Попали во что-то непонятное (ящик, платформа)
-        else if (isLaser == false)
+
+        if (!isLaser)
         {
             Destroy(gameObject);
         }

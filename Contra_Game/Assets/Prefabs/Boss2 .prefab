@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8355050133512302320
+--- !u!1 &8413895045769862647
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6060076548952108574}
-  - component: {fileID: 1198420455099165383}
-  - component: {fileID: 8359663168330807836}
-  - component: {fileID: 3157718317061228283}
-  - component: {fileID: 5921025833198871324}
+  - component: {fileID: 1418759150075691324}
+  - component: {fileID: 5750763675942984371}
+  - component: {fileID: 4315047839650485828}
+  - component: {fileID: 6796034816472767571}
+  - component: {fileID: 4020076049571811413}
   m_Layer: 0
-  m_Name: EnemyBullet_turret
+  m_Name: 'Boss2 '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6060076548952108574
+--- !u!4 &1418759150075691324
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8355050133512302320}
+  m_GameObject: {fileID: 8413895045769862647}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.757865, y: -12.381926, z: 0}
-  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_LocalPosition: {x: 24.35, y: -12.27, z: 0}
+  m_LocalScale: {x: 3.620535, y: 3.791801, z: 0.20672183}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1198420455099165383
+--- !u!212 &5750763675942984371
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8355050133512302320}
+  m_GameObject: {fileID: 8413895045769862647}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -84,8 +84,8 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -9133718559506706844, guid: 7a0cf3b22c4dbcb4b9fa1cbf08ecceab, type: 3}
-  m_Color: {r: 1, g: 0.35099286, b: 0, a: 1}
+  m_Sprite: {fileID: 2967082414085178799, guid: ffcbbdee307b1044c889fccb696a1260, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -94,40 +94,13 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!50 &8359663168330807836
-Rigidbody2D:
-  serializedVersion: 5
+--- !u!61 &4315047839650485828
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8355050133512302320}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDamping: 0
-  m_AngularDamping: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 0
---- !u!58 &3157718317061228283
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8355050133512302320}
+  m_GameObject: {fileID: 8413895045769862647}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -151,23 +124,64 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
---- !u!114 &5921025833198871324
+  m_Offset: {x: -0.0062616467, y: 0.011338711}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.734375, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.7489803, y: 1.0114517}
+  m_EdgeRadius: 0
+--- !u!114 &6796034816472767571
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8355050133512302320}
+  m_GameObject: {fileID: 8413895045769862647}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0d0970bcbce99834489b58cedecb8e90, type: 3}
+  m_Script: {fileID: 11500000, guid: 692eeb7ced303aa438fe870153670510, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyBullet
-  speed: 5
-  damage: 1
+  m_EditorClassIdentifier: Assembly-CSharp::BossController
+  maxHealth: 100
+  activationDistance: 10
+  nextLevelName: Level 3
+  healthBar: {fileID: 0}
+  winText: {fileID: 0}
+  startInvulnerable: 0
+--- !u!114 &4020076049571811413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8413895045769862647}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47d2be423f6e61548ad316944628be9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlyingBossDive
+  activationDistance: 15
+  diveHorizontalOffset: 2.5
+  aimDirectChance: 0.35
+  highYOffset: 4.5
+  lowYOffset: 0.6
+  highFollowSpeed: 3
+  diveSpeed: 7
+  returnSpeed: 5
+  highHoldSeconds: 2
+  telegraphSeconds: 0.35
+  vulnerableSeconds: 1.1
+  contactDamage: 1
+  contactDamageCooldown: 1
+  slamRadius: 0.9
+  returnUpAfterHit: 1

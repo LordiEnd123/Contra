@@ -171,5 +171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bullet
   speed: 20
   damage: 10
-  rb: {fileID: 8726009089723153099}
   isLaser: 0
+  worldLayers:
+    serializedVersion: 2
+    m_Bits: 1088

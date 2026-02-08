@@ -129,7 +129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   speed: 4
-  activationDistance: 2
+  activationDistance: 3
 --- !u!95 &5259608474708476410
 Animator:
   serializedVersion: 7

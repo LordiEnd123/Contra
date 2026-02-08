@@ -1,120 +1,122 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
+/// <summary>
+/// Boss activation + HP + win flow.
+/// Supports external control of HP bar visibility (e.g. show only after intro/entry).
+/// </summary>
 public class BossController : MonoBehaviour
 {
-    [Header("Настройки Босса")]
-    public float maxHealth = 100f; // Сделал 100, для проверки проще
-    public float activationDistance = 15f; // Дистанция пробуждения
-    public string nextLevelName = "Level2"; // Убедись, что сцена так называется
+    [Header("Boss")]
+    public float maxHealth = 100f;
+    public float activationDistance = 15f;
+    public string nextLevelName = "Level2";
+
+    [Header("UI")]
+    public Slider healthBar;
+    public GameObject winText;
+
+    [Header("Damage Gate")]
+    public bool startInvulnerable = false;
 
     private float currentHealth;
     private Transform player;
-    private bool isBossActive = false; // Спит или нет
+    private bool isBossActive;
+    private bool damageEnabled = true;
 
-    [Header("Связи (UI и Компоненты)")]
-    public Slider healthBar; // Ссылка на слайдер жизни
-    public GameObject winText; // Текст "YOU WIN"
-    public GameObject visualRoot; // (Необязательно) Если у босса много частей, кинь сюда родителя графики
+    public bool IsActive => isBossActive;
 
-    void Start()
+    private void Start()
     {
         currentHealth = maxHealth;
 
-        // 1. Ищем игрока
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
-            player = playerObj.transform;
+        if (playerObj != null) player = playerObj.transform;
 
-        // 2. Прячем полоску жизни и текст победы в начале
-        if (healthBar != null) healthBar.gameObject.SetActive(false);
-        if (winText != null) winText.SetActive(false);
-
-        // Настраиваем слайдер
         if (healthBar != null)
         {
             healthBar.maxValue = maxHealth;
             healthBar.value = currentHealth;
+            healthBar.gameObject.SetActive(false);
         }
+
+        if (winText != null) winText.SetActive(false);
     }
 
-    void Update()
+    private void Update()
     {
-        // Если босс еще спит...
-        if (!isBossActive && player != null)
-        {
-            // Меряем расстояние
-            float distance = Vector2.Distance(transform.position, player.position);
+        if (isBossActive || player == null) return;
 
-            // Если подошли близко -> БУДИМ
-            if (distance < activationDistance)
-            {
-                ActivateBoss();
-            }
-        }
+        float distance = Vector2.Distance(transform.position, player.position);
+        if (distance < activationDistance)
+            ActivateBoss();
     }
 
-    void ActivateBoss()
+    public void ForceActivate()
+    {
+        if (!isBossActive) ActivateBoss();
+    }
+
+    public void SetDamageEnabled(bool enabled)
+    {
+        damageEnabled = enabled;
+    }
+
+    /// <summary>
+    /// Explicit control for showing/hiding the HP bar (for intro phases).
+    /// </summary>
+    public void SetHealthBarVisible(bool visible)
+    {
+        if (healthBar != null) healthBar.gameObject.SetActive(visible);
+    }
+
+    private void ActivateBoss()
     {
         isBossActive = true;
+        damageEnabled = !startInvulnerable;
 
-        // Показываем полоску жизни
-        if (healthBar != null) healthBar.gameObject.SetActive(true);
+        // По умолчанию BossController может показать HP-bar сам,
+        // но TankBossEntry будет управлять видимостью вручную.
+        if (healthBar != null) healthBar.value = currentHealth;
 
-        Debug.Log("БОСС: Я ВИЖУ ТЕБЯ! БИТВА НАЧАЛАСЬ!");
+        Debug.Log("Boss activated");
     }
 
     public void TakeDamage(int damage)
     {
-        // ГЛАВНОЕ ИСПРАВЛЕНИЕ:
-        // Если босс спит — урон не проходит!
         if (!isBossActive) return;
+        if (!damageEnabled) return;
 
         currentHealth -= damage;
 
-        // Обновляем слайдер
         if (healthBar != null) healthBar.value = currentHealth;
 
-        if (currentHealth <= 0)
-        {
+        if (currentHealth <= 0f)
             Die();
-        }
     }
 
-    void Die()
+    private void Die()
     {
-        Debug.Log("БОСС ПОВЕРЖЕН!");
+        Debug.Log("Boss died");
 
-        // 1. Показываем победный текст
         if (winText != null) winText.SetActive(true);
-
-        // 2. Прячем слайдер
         if (healthBar != null) healthBar.gameObject.SetActive(false);
 
-        // 3. "Удаляем" босса визуально, но НЕ выключаем скрипт
-        // Выключаем коллайдер, чтобы пули пролетали сквозь труп
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = false;
 
-        // Выключаем картинку (SpriteRenderer)
         SpriteRenderer spr = GetComponent<SpriteRenderer>();
         if (spr != null) spr.enabled = false;
 
-        // Выключаем всех детей (пушки, турели), если они есть внутри
         foreach (Transform child in transform)
-        {
             child.gameObject.SetActive(false);
-        }
 
-        // 4. Запускаем таймер перехода (4 секунды)
-        Invoke("LoadNextLevel", 4f);
+        Invoke(nameof(LoadNextLevel), 4f);
     }
 
-    void LoadNextLevel()
+    private void LoadNextLevel()
     {
-        Debug.Log("Загрузка уровня: " + nextLevelName);
-        // Грузим сцену. Убедись, что добавил Level2 в File -> Build Settings!
         SceneManager.LoadScene(nextLevelName);
     }
 }
