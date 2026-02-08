@@ -5325,6 +5325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 675485342}
   - component: {fileID: 675485343}
+  - component: {fileID: 675485344}
   m_Layer: 10
   m_Name: LeftWall
   m_TagString: Untagged
@@ -5341,7 +5342,7 @@ Transform:
   m_GameObject: {fileID: 675485341}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.49, y: -1.24, z: 0}
+  m_LocalPosition: {x: -8.6458435, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5391,8 +5392,20 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 1, y: 20}
+  m_Size: {x: 1, y: 16}
   m_EdgeRadius: 0
+--- !u!114 &675485344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 675485341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54269b1248443d4b9b4b958d2c55f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenEdgeCollider
 --- !u!1 &714716876
 GameObject:
   m_ObjectHideFlags: 0
