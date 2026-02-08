@@ -1,4 +1,3 @@
-// Assets/_Scripts/Bullet.cs
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -29,12 +28,10 @@ public sealed class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D hit)
     {
-        // Ignore player, other bullets, pickups
         if (hit.CompareTag("Player")) return;
         if (hit.GetComponent<Bullet>() != null) return;
         if (hit.GetComponent<PowerUp>() != null) return;
 
-        // 1) Boss first
         BossController boss = hit.GetComponentInParent<BossController>();
         if (boss != null)
         {
@@ -42,8 +39,6 @@ public sealed class Bullet : MonoBehaviour
             if (!isLaser) Destroy(gameObject);
             return;
         }
-
-        // 2) Regular enemy
         Enemy enemy = hit.GetComponentInParent<Enemy>();
         if (enemy != null)
         {
@@ -51,8 +46,6 @@ public sealed class Bullet : MonoBehaviour
             if (!isLaser) Destroy(gameObject);
             return;
         }
-
-        // 3) World geometry by layers
         if ((worldLayers.value & (1 << hit.gameObject.layer)) != 0)
         {
             Destroy(gameObject);

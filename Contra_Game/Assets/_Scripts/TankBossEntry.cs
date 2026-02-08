@@ -1,12 +1,5 @@
-﻿// Assets/_Scripts/TankBossEntry.cs
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Entry flow:
-/// - when player passes activatePoint.x -> activates boss (but hides HP bar), invulnerable, no shooting
-/// - drives to stopPoint.x
-/// - once stopped -> shows HP bar, enables damage and shooting
-/// </summary>
 [DisallowMultipleComponent]
 public sealed class TankBossEntry : MonoBehaviour
 {
@@ -44,7 +37,6 @@ public sealed class TankBossEntry : MonoBehaviour
         if (enemyShooting != null)
             enemyShooting.enabled = false;
 
-        // На всякий случай прячем HP-bar в начале сцены
         if (bossController != null)
             bossController.SetHealthBarVisible(false);
     }
@@ -64,7 +56,6 @@ public sealed class TankBossEntry : MonoBehaviour
             bossController.startInvulnerable = true;
             bossController.ForceActivate();
 
-            // Едет -> урон нельзя + HP-bar скрыт + не стреляет
             bossController.SetDamageEnabled(false);
             bossController.SetHealthBarVisible(false);
 
@@ -75,12 +66,10 @@ public sealed class TankBossEntry : MonoBehaviour
         }
 
         if (stopped) return;
-
         DriveToStopPointX();
 
         if (stopped)
         {
-            // Встал -> урон можно + показываем HP + включаем стрельбу
             bossController.SetDamageEnabled(true);
             bossController.SetHealthBarVisible(true);
 

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Collections; // НУЖНО ДЛЯ КОРУТИН (IEnumerator)
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -12,7 +12,7 @@ public class PlayerHealth : MonoBehaviour
 
     [Header("Неуязвимость")]
     public float invulnerabilityDuration = 2f; // Сколько секунд длится бессмертие
-    public float flashSpeed = 0.1f; // Как быстро мигать (чем меньше число, тем чаще)
+    public float flashSpeed = 0.1f; // Как быстро мигать
 
     private bool isInvulnerable = false; // Сейчас бессмертен?
     private SpriteRenderer spriteRenderer; // Чтобы мигать картинкой
@@ -69,13 +69,9 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Возрождение с щитом!");
     }
 
-    // --- МАГИЯ МИГАНИЯ ---
     IEnumerator BecomeInvulnerable()
     {
         isInvulnerable = true;
-
-        // (Опционально) Можно сделать так, чтобы враги проходили сквозь нас:
-        // Physics2D.IgnoreLayerCollision(6, 7, true); 
 
         // Цикл мигания
         for (float i = 0; i < invulnerabilityDuration; i += flashSpeed)
@@ -83,19 +79,17 @@ public class PlayerHealth : MonoBehaviour
             // Выключаем картинку
             if (spriteRenderer != null) spriteRenderer.enabled = false;
 
-            yield return new WaitForSeconds(flashSpeed / 2); // Ждем чуть-чуть
+            yield return new WaitForSeconds(flashSpeed / 2);
 
             // Включаем картинку
             if (spriteRenderer != null) spriteRenderer.enabled = true;
 
-            yield return new WaitForSeconds(flashSpeed / 2); // Ждем чуть-чуть
+            yield return new WaitForSeconds(flashSpeed / 2);
         }
 
         // В конце обязательно включаем всё обратно
         if (spriteRenderer != null) spriteRenderer.enabled = true;
         isInvulnerable = false;
-
-        // Physics2D.IgnoreLayerCollision(6, 7, false); // Если отключали коллизии
     }
 
     void UpdateHeartsUI()

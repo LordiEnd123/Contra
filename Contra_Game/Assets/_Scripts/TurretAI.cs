@@ -13,7 +13,7 @@ public class TurretAI : MonoBehaviour
 
     void Start()
     {
-        // Ищем игрока по тегу (убедись, что у игрока тег "Player")
+        // Ищем игрока по тегу
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
     }
@@ -31,8 +31,6 @@ public class TurretAI : MonoBehaviour
             Vector2 direction = player.position - gunPart.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-            // Если спрайт пушки изначально смотрит вправо - оставляем так.
-            // Если влево - возможно придется добавить +180 к углу.
             gunPart.rotation = Quaternion.Euler(0, 0, angle);
 
             // 3. Стреляем

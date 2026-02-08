@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[ExecuteInEditMode] // Чтобы работало даже не нажимая Play
+[ExecuteInEditMode]
 public class ScreenEdgeCollider : MonoBehaviour
 {
     private Camera cam;
@@ -8,7 +8,7 @@ public class ScreenEdgeCollider : MonoBehaviour
 
     void Start()
     {
-        cam = Camera.main; // Находим камеру
+        cam = Camera.main;
         col = GetComponent<BoxCollider2D>();
     }
 
@@ -21,15 +21,12 @@ public class ScreenEdgeCollider : MonoBehaviour
         float screenWidth = screenHeight * cam.aspect;
 
         // 2. Двигаем стену на левый край
-        // Ширина / 2 — это расстояние от центра до края.
-        // Ставим минус, чтобы было слева.
-        // Добавляем 0.5f (половина ширины стены), чтобы она была чуть-чуть за кадром
         transform.localPosition = new Vector3(-(screenWidth / 2) - 0.5f, 0, 0);
 
         // 3. Растягиваем коллайдер по высоте, чтобы он всегда закрывал экран сверху донизу
         if (col != null)
         {
-            col.size = new Vector2(1f, screenHeight + 2f); // +2 про запас
+            col.size = new Vector2(1f, screenHeight + 2f);
         }
     }
 }

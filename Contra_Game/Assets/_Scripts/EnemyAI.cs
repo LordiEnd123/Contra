@@ -3,8 +3,6 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     public float speed = 3f; // Скорость бега
-
-    // --- НОВЫЕ НАСТРОЙКИ ---
     public float activationDistance = 15f; // С какого расстояния начинать бежать
     private Transform player;
     private bool isActivated = false; // По умолчанию он спит
@@ -15,8 +13,7 @@ public class EnemyAI : MonoBehaviour
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) player = p.transform;
 
-        // 2. (БОНУС) Сразу говорим врагу игнорировать левую стену, 
-        // чтобы он не застревал, когда начнет бежать
+        // 2. Сразу говорим врагу игнорировать левую стену, чтобы он не застревал, когда начнет бежать
         GameObject wall = GameObject.Find("LeftWall");
         if (wall != null)
         {
@@ -26,8 +23,7 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        // --- ЛОГИКА АКТИВАЦИИ ---
-        // Если враг еще "спит"...
+        // Если враг еще "спит"
         if (!isActivated)
         {
             if (player == null) return; // Если игрока нет, спим дальше
@@ -35,26 +31,24 @@ public class EnemyAI : MonoBehaviour
             // Проверяем дистанцию
             float distance = Vector2.Distance(transform.position, player.position);
 
-            // Если игрок подошел близко -> ПРОСЫПАЕМСЯ
+            // Если игрок подошел близко, то просыпаемся
             if (distance < activationDistance)
             {
                 isActivated = true;
             }
             else
             {
-                return; // Выходим из Update, код движения ниже НЕ выполняется
+                return; // Выходим из Update, код движения ниже не выполняется
             }
         }
 
-        // --- КОД ДВИЖЕНИЯ (Работает только если isActivated == true) ---
-        // Всегда двигаться влево (Vector2.left = x: -1, y: 0)
+        // Всегда двигаться влево
         transform.Translate(Vector2.left * speed * Time.deltaTime);
     }
 
-    // Если враг упал в пропасть (ниже Y = -10), удаляем его, чтобы не грузить память
+    // Если враг упал в пропасть удаляем его
     void FixedUpdate()
     {
-        // ШПИОН: Пишем текущую высоту в консоль, если он близко к смерти
         if (transform.position.y < -9)
         {
             Debug.LogWarning("Враг опасно низко! Высота: " + transform.position.y);
@@ -69,19 +63,16 @@ public class EnemyAI : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        // --- ШПИОНСКАЯ СТРОЧКА ---
         Debug.Log("Враг врезался в: " + collision.gameObject.name);
-        // -------------------------
 
         if (collision.gameObject.tag == "Player")
         {
-            // ... твой старый код ...
             PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
             if (playerHealth != null) playerHealth.TakeDamage(1);
         }
     }
 
-    // Рисуем круг в редакторе, чтобы ты видел зону активации
+    // Рисуем круг в редакторе
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

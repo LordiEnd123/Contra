@@ -3,15 +3,15 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Кого спавним")]
-    public GameObject enemyPrefab; // Сюда перетащи префаб Бегуна
+    public GameObject enemyPrefab;
 
     [Header("Настройки")]
     public float spawnInterval = 2f;    // Как часто (сек)
     public float activationDistance = 15f; // С какого расстояния начинать
-    public bool spawnFacingLeft = true; // ГАЛОЧКА: Если враг должен бежать ВЛЕВО
+    public bool spawnFacingLeft = true; // Если враг должен бежать ВЛЕВО
 
     [Header("Лимиты")]
-    public int maxEnemiesToSpawn = 5;   // Сколько всего врагов выпустит этот спавнер (0 = бесконечно)
+    public int maxEnemiesToSpawn = 5;   // Сколько всего врагов выпустит этот спавнер
 
     private Transform player;
     private float timer;
@@ -66,7 +66,7 @@ public class EnemySpawner : MonoBehaviour
         spawnedCount++;
     }
 
-    // РИСУЕМ ИКОНКУ В РЕДАКТОРЕ (чтобы ты видел, где стоит спавнер)
+    // Радиус работы
     void OnDrawGizmos()
     {
         Gizmos.color = Color.green;

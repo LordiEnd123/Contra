@@ -34,9 +34,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 crouchOffset;
     private bool isCrouching = false;
 
-    // ЧТОБЫ АНИМАЦИЯ НЕ ЗАВИСАЛА
+    // Чтобы анимация не зависала
     private string currentAnimState;
-    // Названия твоих анимаций (должны совпадать с названиями блоков в Аниматоре)
+
     const string PLAYER_IDLE = "Player_Idle";
     const string PLAYER_RUN = "Player_Run";
 
@@ -60,24 +60,20 @@ public class PlayerController : MonoBehaviour
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
 
-        // --- НОВАЯ ЛОГИКА АНИМАЦИИ (БЕЗ СТРЕЛОЧЕК) ---
         if (horizontalInput != 0)
         {
-            // Если нажаты кнопки - включаем БЕГ
             ChangeAnimation(PLAYER_RUN);
         }
         else
         {
-            // Если стоим - включаем ПОКОЙ
             ChangeAnimation(PLAYER_IDLE);
         }
-        // ---------------------------------------------
 
-        // ПОВОРОТ
+        // Поворот
         if (horizontalInput > 0 && !isFacingRight) Flip();
         else if (horizontalInput < 0 && isFacingRight) Flip();
 
-        // ПРЫЖОК ВНИЗ
+        // Прыжок вниз
         if (Input.GetKey(KeyCode.S) && Input.GetButtonDown("Jump"))
         {
             RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 3f, platformLayer);
@@ -87,7 +83,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // ПРИСЕДАНИЕ
+        // Приседание
         if (Input.GetKey(KeyCode.S) && isGrounded)
         {
             playerCollider.size = crouchSize;
@@ -104,7 +100,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // ПРЫЖОК ВВЕРХ
+        // Прыжок вверх
         if (isGrounded) extraJumps = extraJumpsValue;
 
         if (Input.GetButtonDown("Jump") && !Input.GetKey(KeyCode.S) && extraJumps > 0)
@@ -124,10 +120,9 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
 
-    // --- ВСПОМОГАТЕЛЬНЫЙ МЕТОД ДЛЯ ВКЛЮЧЕНИЯ АНИМАЦИИ ---
     void ChangeAnimation(string newState)
     {
-        // Если эта анимация уже играет - выходим (чтобы не начинать её сначала каждый кадр)
+        // Если эта анимация уже играет - выходим
         if (currentAnimState == newState) return;
 
         // Запускаем анимацию

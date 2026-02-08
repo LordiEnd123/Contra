@@ -8,7 +8,6 @@ public class DeadlyObstacle : MonoBehaviour
         {
             // Ищем скрипт здоровья
             PlayerHealth player = collision.GetComponent<PlayerHealth>();
-
             if (player != null)
             {
                 // Наносим 1 единицу урона. 

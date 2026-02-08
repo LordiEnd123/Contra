@@ -8,7 +8,6 @@ public class CameraFollow : MonoBehaviour
 
     [Header("Границы")]
     public float rightLimit = 145f; // Где камера стопорится у босса
-
     private float leftLimit; // "Память" камеры
 
     void Start()
@@ -30,7 +29,6 @@ public class CameraFollow : MonoBehaviour
         }
     }
 
-    // Добавь этот метод в CameraFollow.cs
     public void ResetCamera()
     {
         if (target == null) return;
@@ -44,6 +42,4 @@ public class CameraFollow : MonoBehaviour
         // 3. Самое важное: сбрасываем "память" левой границы
         leftLimit = newX;
     }
-
-
 }

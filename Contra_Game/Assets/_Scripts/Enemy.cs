@@ -7,8 +7,8 @@ public class Enemy : MonoBehaviour
     public float moveSpeed = 5f;
 
     [Header("Настройки Типа Врага")]
-    public bool destroyOverTime = false; // ГАЛОЧКА: Ставь TRUE для бегунов, FALSE для турелей/босса
-    public float lifeTime = 10f; // Сколько живет бегун
+    public bool destroyOverTime = false;
+    public float lifeTime = 10f;
 
     [Header("Активация")]
     public float activationDistance = 20f;
@@ -38,8 +38,6 @@ public class Enemy : MonoBehaviour
     void Update()
     {
         if (player == null) return;
-
-        // ЛОГИКА АКТИВАЦИИ
         if (!isActivated)
         {
             float distance = Vector2.Distance(transform.position, player.position);
@@ -50,8 +48,7 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            // ДВИЖЕНИЕ (Только если есть скорость и это не турель)
-            // Если moveSpeed > 0, враг идет. Для турелей можно ставить Speed = 0.
+            // ДВИЖЕНИЕ
             if (moveSpeed > 0)
             {
                 transform.Translate(Vector2.left * moveSpeed * Time.deltaTime);
@@ -63,7 +60,6 @@ public class Enemy : MonoBehaviour
     {
         isActivated = true;
 
-        // ВАЖНОЕ ИЗМЕНЕНИЕ:
         // Запускаем таймер смерти ТОЛЬКО если стоит галочка
         if (destroyOverTime)
         {
@@ -74,7 +70,6 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (!isActivated) WakeUp();
-
         health -= damage;
         if (health <= 0) Die();
     }

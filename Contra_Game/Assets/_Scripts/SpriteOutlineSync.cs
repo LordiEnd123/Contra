@@ -1,11 +1,5 @@
-﻿// Assets/_Scripts/SpriteOutlineSync.cs
-using UnityEngine;
+﻿using UnityEngine;
 
-/// <summary>
-/// Copies sprite + flip from a source SpriteRenderer into a target SpriteRenderer,
-/// keeping the target behind the source by sorting order offset.
-/// Use it for outline/ghost layers that must follow animations.
-/// </summary>
 [ExecuteAlways]
 [DisallowMultipleComponent]
 public sealed class SpriteOutlineSync : MonoBehaviour

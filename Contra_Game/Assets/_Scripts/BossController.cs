@@ -2,10 +2,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-/// <summary>
-/// Boss activation + HP + win flow.
-/// Supports external control of HP bar visibility (e.g. show only after intro/entry).
-/// </summary>
 public class BossController : MonoBehaviour
 {
     [Header("Boss")]
@@ -63,9 +59,6 @@ public class BossController : MonoBehaviour
         damageEnabled = enabled;
     }
 
-    /// <summary>
-    /// Explicit control for showing/hiding the HP bar (for intro phases).
-    /// </summary>
     public void SetHealthBarVisible(bool visible)
     {
         if (healthBar != null) healthBar.gameObject.SetActive(visible);
@@ -75,15 +68,11 @@ public class BossController : MonoBehaviour
     {
         isBossActive = true;
         damageEnabled = !startInvulnerable;
-
-        // --- ƒŒ¡¿¬‹ ›“” —“–Œ ”: ---
         if (healthBar != null)
         {
-            healthBar.gameObject.SetActive(true); // <--- ¬Œ“ ›“Œ ¬ Àﬁ◊¿≈“ œŒÀŒ— ”
+            healthBar.gameObject.SetActive(true);
             healthBar.value = currentHealth;
         }
-        // --------------------------
-
         Debug.Log("Boss activated");
     }
 
@@ -91,9 +80,7 @@ public class BossController : MonoBehaviour
     {
         if (!isBossActive) return;
         if (!damageEnabled) return;
-
         currentHealth -= damage;
-
         if (healthBar != null) healthBar.value = currentHealth;
 
         if (currentHealth <= 0f)

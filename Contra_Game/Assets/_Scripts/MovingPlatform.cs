@@ -26,15 +26,13 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    // --- МАГИЯ ПРИКЛЕИВАНИЯ ---
-
     // Когда Игрок наступает на платформу
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Проверяем по тегу, точно ли это Player
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Делаем игрока "пассажиром" (дочерним объектом) платформы
+            // Делаем игрока "пассажиром" платформы
             collision.transform.SetParent(transform);
         }
     }
@@ -44,7 +42,6 @@ public class MovingPlatform : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            // Освобождаем игрока (убираем родителя)
             collision.transform.SetParent(null);
         }
     }

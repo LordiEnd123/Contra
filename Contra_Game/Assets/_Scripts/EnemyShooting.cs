@@ -8,7 +8,7 @@ public class EnemyShooting : MonoBehaviour
     public float timeBetweenShots = 2f;
 
     [Header("Дистанция Атаки")]
-    public float activationDistance = 10f; // Добавь такую же цифру, как в Enemy
+    public float activationDistance = 10f;
 
     private float nextFireTime;
     private Transform player;
@@ -33,7 +33,7 @@ public class EnemyShooting : MonoBehaviour
             return;
         }
 
-        // 3. Если близко — стреляем по таймеру
+        // 3. Если близко, то стреляем по таймеру
         if (Time.time > nextFireTime)
         {
             nextFireTime = Time.time + timeBetweenShots;

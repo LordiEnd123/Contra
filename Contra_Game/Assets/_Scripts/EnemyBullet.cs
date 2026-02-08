@@ -13,7 +13,7 @@ public class EnemyBullet : MonoBehaviour
 
     void Update()
     {
-        // Летит туда, куда смотрит (вправо от своего поворота)
+        // Летит туда, куда смотрит
         transform.Translate(Vector2.right * speed * Time.deltaTime);
     }
 
@@ -31,7 +31,7 @@ public class EnemyBullet : MonoBehaviour
             Destroy(gameObject); // Пуля исчезает
         }
 
-        // Если попали в землю (Ground) - тоже исчезаем
+        // Если попали в землю, то исчезаем
         if (hitInfo.name == "Ground" || hitInfo.tag == "Ground")
         {
             Destroy(gameObject);
